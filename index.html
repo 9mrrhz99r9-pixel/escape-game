@@ -43,7 +43,26 @@ function update(dt){if(!gameStarted||gameOver||won)return;if(msgTimer>0){msgTime
 // random roaming enemy
 enemy.timer-=dt;if(room===enemy.room&&enemy.timer<=0){enemy.timer=.8+Math.random()*1.6;enemy.dir=[0,Math.PI/2,Math.PI,-Math.PI/2][Math.floor(Math.random()*4)];enemy.mode=enemy.mode==='chase'?'chase':'wander'}if(room!==enemy.room){$('stateHud').textContent='探索中';return}let dx=player.x-enemy.x,dy=player.y-enemy.y,dist=Math.hypot(dx,dy);const facing=Math.atan2(Math.sin(Math.atan2(dy,dx)-enemy.dir),Math.cos(Math.atan2(dy,dx)-enemy.dir));const sees=!player.hidden&&dist<3.6&&Math.abs(facing)<.58;
 if(sees){enemy.mode='chase';enemy.dir=Math.abs(dx)>Math.abs(dy)?(dx>0?0:Math.PI):(dy>0?Math.PI/2:-Math.PI/2);$('stateHud').textContent='!! 発見された !!';}else if(enemy.mode==='chase'&&dist>5){enemy.mode='wander';notify('敵を見失ったようだ');$('stateHud').textContent='探索中'}
-let es=enemy.mode==='chase'?1.5:.65;if(enemy.mode==='chase'){enemy.x+=Math.cos(enemy.dir)*es*dt;enemy.y+=Math.sin(enemy.dir)*es*dt}else{const nx=enemy.x+Math.cos(enemy.dir)*es*dt,ny=enemy.y+Math.sin(enemy.dir)*es*dt;if(collides(nx,ny)){enemy.dir+=Math.PI*(.6+Math.random()*.8)}else{enemy.x=nx;enemy.y=ny}}
+let es=enemy.mode==='chase'?1.5:.65;
+if(enemy.mode==='chase'){
+  if(enemy.dir===0||enemy.dir===Math.PI){
+    const nx=enemy.x+Math.cos(enemy.dir)*es*dt;
+    if(!collides(nx,enemy.y))enemy.x=nx;
+  }else{
+    const ny=enemy.y+Math.sin(enemy.dir)*es*dt;
+    if(!collides(enemy.x,ny))enemy.y=ny;
+  }
+}else{
+  const nx=enemy.x+Math.cos(enemy.dir)*es*dt;
+  const ny=enemy.y+Math.sin(enemy.dir)*es*dt;
+  if(collides(nx,ny)){
+    enemy.dir=[0,Math.PI/2,Math.PI,-Math.PI/2][Math.floor(Math.random()*4)];
+  }else if(enemy.dir===0||enemy.dir===Math.PI){
+    enemy.x=nx;
+  }else{
+    enemy.y=ny;
+  }
+}
 if(!player.hidden&&room===enemy.room&&dist<.48){finish(false)}
 $('itemHud').textContent='所持品：'+(hasKey?'鍵':'なし');if(enemy.mode!=='chase')$('stateHud').textContent='探索中';}
 function finish(win){gameOver=!win;won=win;gameStarted=false;$('overlay').style.display='flex';$('panelTitle').textContent=win?'ESCAPED':'GAME OVER';$('panelText').innerHTML=win?'出口から脱出した。<br>試作品クリア！':'敵に捕まってしまった。<br>タイトルからやり直そう。';$('startBtn').textContent='はじめから';$('helpBtn').textContent='操作方法';}
