@@ -6,7 +6,21 @@ let room=0,player={x:3.5,y:4.5,dir:'down',hidden:false},enemy={x:8,y:4,dir:0,mod
 function chooseKey(){rooms.forEach(r=>r.keySpot=null);const ri=Math.random()<.5?0:1;const candidates=ri===0?[[6,5],[9,2],[3,5]]:[[4,4],[8,2],[6,6]];rooms[ri].keySpot=candidates[Math.floor(Math.random()*candidates.length)];}
 function reset(){room=0;player={x:3.5,y:4.5,dir:'down',hidden:false};enemy={x:8,y:4,dir:Math.PI,mode:'wander',timer:0,room:0};hasKey=false;unlocked=false;gameOver=false;won=false;running=false;chooseKey();$('overlay').style.display='none';$('roomLabel').textContent='ROOM 01';$('itemHud').textContent='所持品：なし';$('stateHud').textContent='探索中';gameStarted=true;notify('鍵を探して出口へ向かおう');last=performance.now();requestAnimationFrame(loop)}
 function notify(t){const e=$('message');e.textContent=t;e.style.display='block';msgTimer=2.2}
-function tileImg(name,x,y,w=TILE,h=TILE){const im=imgs[name];if(im&&im.complete&&im.naturalWidth)ctx.drawImage(im,x,y,w,h)}
+function tileImg(name,x,y,w=TILE,h=TILE,angle=0){
+  const im=imgs[name];
+  if(!im||!im.complete||!im.naturalWidth)return;
+
+  if(angle===0){
+    ctx.drawImage(im,x,y,w,h);
+    return;
+  }
+
+  ctx.save();
+  ctx.translate(x+w/2,y+h/2);
+  ctx.rotate(angle*Math.PI/180);
+  ctx.drawImage(im,-w/2,-h/2,w,h);
+  ctx.restore();
+}
 function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);const r=rooms[room];for(let y=0;y<H;y++)for(let x=0;x<W;x++){tileImg((x+y)%7===0?'floor_alt':'floor',x*TILE,y*TILE);if((x*3+y*7+room)%37===0)tileImg('floor_horror',x*TILE,y*TILE)}
 // room perimeter walls, door gaps
 for(let x=0;x<W;x++){tileImg('wall',x*TILE,0);tileImg('wall',x*TILE,(H-1)*TILE)}for(let y=1;y<H-1;y++){if(!r.doors.some(d=>d.x===0&&d.y===y))tileImg('wall',0,y*TILE);if(!r.doors.some(d=>d.x===W-1&&d.y===y))tileImg('wall',(W-1)*TILE,y*TILE)}
