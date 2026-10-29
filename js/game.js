@@ -23,7 +23,17 @@ function tileImg(name,x,y,w=TILE,h=TILE,angle=0){
 }
 function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);const r=rooms[room];for(let y=0;y<H;y++)for(let x=0;x<W;x++){tileImg((x+y)%7===0?'floor_alt':'floor',x*TILE,y*TILE);if((x*3+y*7+room)%37===0)tileImg('floor_horror',x*TILE,y*TILE)}
 // room perimeter walls, door gaps
-for(let x=0;x<W;x++){tileImg('wall',x*TILE,0);tileImg('wall',x*TILE,(H-1)*TILE)}for(let y=1;y<H-1;y++){if(!r.doors.some(d=>d.x===0&&d.y===y))tileImg('wall',0,y*TILE);if(!r.doors.some(d=>d.x===W-1&&d.y===y))tileImg('wall',(W-1)*TILE,y*TILE)}
+for(let x=0;x<W;x++){
+  tileImg('wall',x*TILE,0);
+  tileImg('wall',x*TILE,(H-1)*TILE);
+}
+for(let y=1;y<H-1;y++){
+  if(!r.doors.some(d=>d.x===0&&d.y===y))
+    tileImg('wall',0,y*TILE,TILE,TILE,90);
+
+  if(!r.doors.some(d=>d.x===W-1&&d.y===y))
+    tileImg('wall',(W-1)*TILE,y*TILE,TILE,TILE,90);
+}
 // windows and decorations
 if(room===0){tileImg('window',3*TILE,0,64,32);tileImg('board',7*TILE,0,64,32)}else if(room===1){tileImg('wall_drip',5*TILE,0,32,32);tileImg('window',7*TILE,0,64,32)}else{tileImg('wall_cracked',3*TILE,0);tileImg('wall_drip',8*TILE,0,32,32)}
 // doors
