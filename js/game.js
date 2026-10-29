@@ -1,4 +1,3 @@
-<script>
 (()=>{'use strict';
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
 const $=id=>document.getElementById(id);const imgs={};for(const n of ['floor','floor_alt','floor_horror','floor_decayed','wall','wall_cracked','locker','locker_decayed','desk','chair','door','window','board','cubby','student_idle','student_walk','wall_drip']){imgs[n]=new Image();imgs[n].src='assets/'+n+'.png'}
@@ -202,4 +201,3 @@ function loop(t){if(!gameStarted)return;let dt=Math.min(.04,(t-last)/1000||0);la
 // Render preview behind title overlay
 chooseKey();draw();
 })();
-</script>
