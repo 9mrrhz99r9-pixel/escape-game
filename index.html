@@ -156,12 +156,13 @@ function update(dt){
     let dy=player.y-enemy.y;
 
     if(enemy.mode==='chase'&&!player.hidden){
-      if(Math.abs(dx)>Math.abs(dy)){
-        enemy.dir=dx>0?0:Math.PI;
-      }else{
-        enemy.dir=dy>0?Math.PI/2:-Math.PI/2;
-      }
-    }
+  const deadZone=0.15;
+  if(Math.abs(dx)>Math.abs(dy)+deadZone){
+    enemy.dir=dx>0?0:Math.PI;
+  }else if(Math.abs(dy)>Math.abs(dx)+deadZone){
+    enemy.dir=dy>0?Math.PI/2:-Math.PI/2;
+  }
+}
 
     const nx=enemy.x+Math.cos(enemy.dir)*es*dt;
     const ny=enemy.y+Math.sin(enemy.dir)*es*dt;
