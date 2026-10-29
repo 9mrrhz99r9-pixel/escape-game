@@ -31,7 +31,7 @@ for(const [x,y,type] of r.furniture)tileImg(type,x*TILE,y*TILE,48,48);for(const 
 // key on floor
 if(!hasKey&&r.keySpot){const [kx,ky]=r.keySpot;ctx.fillStyle='#e7c56e';ctx.fillRect(kx*TILE+12,ky*TILE+12,10,4);ctx.fillRect(kx*TILE+19,ky*TILE+13,3,8);ctx.fillRect(kx*TILE+17,ky*TILE+18,3,3);}
 // enemy cone
-if(!player.hidden&&room===enemy.room){ctx.save();ctx.globalAlpha=enemy.mode==='chase'?.18:.09;ctx.fillStyle=enemy.mode==='chase'?'#ff3434':'#e2d9aa';ctx.beginPath();ctx.moveTo(enemy.x*TILE,enemy.y*TILE);ctx.arc(enemy.x*TILE,enemy.y*TILE,enemy.mode==='chase'?130:100,enemy.dir-.58,enemy.dir+.58);ctx.closePath();ctx.fill();ctx.restore();drawCharacter(enemy.x,enemy.y,'enemy')}
+if(room===enemy.room)drawCharacter(enemy.x,enemy.y,'enemy');
 if(!player.hidden)drawCharacter(player.x,player.y,'player');else{ctx.fillStyle='#a7b3ad';ctx.font='12px sans-serif';ctx.fillText('隠れている',8,canvas.height-10)}
 // vignette
 const g=ctx.createRadialGradient(192,128,45,192,128,245);g.addColorStop(0,'#00000000');g.addColorStop(1,'#00000080');ctx.fillStyle=g;ctx.fillRect(0,0,384,256);
