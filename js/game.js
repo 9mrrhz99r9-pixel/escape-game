@@ -48,7 +48,15 @@ if(!player.hidden)drawCharacter(player.x,player.y,'player');else{ctx.fillStyle='
 // vignette
 const g=ctx.createRadialGradient(192,128,45,192,128,245);g.addColorStop(0,'#00000000');g.addColorStop(1,'#00000080');ctx.fillStyle=g;ctx.fillRect(0,0,384,256);
 }
-function drawCharacter(x,y,type){const px=x*TILE,py=y*TILE;if(type==='enemy'){ctx.fillStyle='#191719';ctx.fillRect(px-7,py-10,14,20);ctx.fillStyle='#a52626';ctx.fillRect(px-5,py-6,3,3);ctx.fillRect(px+2,py-6,3,3);ctx.fillStyle='#555052';ctx.fillRect(px-8,py+7,16,5)}else{let im=imgs.student_idle;if(im&&im.complete&&im.naturalWidth){ctx.drawImage(im,0,0,im.naturalWidth/4,im.naturalHeight/4,px-12,py-14,24,24);}else{ctx.fillStyle='#d6d9d2';ctx.fillRect(px-6,py-9,12,17);ctx.fillStyle='#222';ctx.fillRect(px-4,py-6,2,2);ctx.fillRect(px+2,py-6,2,2)}}}
+function drawCharacter(x,y,type){const px=x*TILE,py=y*TILE;if(type==='enemy'){const im=imgs.enemy_sprite_sheet;
+
+  if(im&&im.complete&&im.naturalWidth){
+
+    const fw=im.naturalWidth/4;
+
+    const fh=im.naturalHeight;
+
+    ctx.drawImage(im,0,0,fw,fh,px-12,py-14,24,24);}else{let im=imgs.student_idle;if(im&&im.complete&&im.naturalWidth){ctx.drawImage(im,0,0,im.naturalWidth/4,im.naturalHeight/4,px-12,py-14,24,24);}else{ctx.fillStyle='#d6d9d2';ctx.fillRect(px-6,py-9,12,17);ctx.fillStyle='#222';ctx.fillRect(px-4,py-6,2,2);ctx.fillRect(px+2,py-6,2,2)}}}
 function collides(x,y){if(x<1||x>W-1||y<1||y>H-1)return true;const r=rooms[room];if(r.doors.some(d=>Math.abs(x-(d.x+.5))<.65&&Math.abs(y-(d.y+.5))<.65))return false;for(const [fx,fy] of r.furniture)if(x>fx-.1&&x<fx+1.35&&y>fy-.1&&y<fy+1.25)return true;for(const [fx,fy] of r.lockers)if(x>fx-.1&&x<fx+1.25&&y>fy-.1&&y<fy+1.25)return true;return false}
 function direction(dx,dy){if(Math.abs(dx)>Math.abs(dy))return dx>0?'right':'left';return dy>0?'down':'up'}
 function update(dt){
