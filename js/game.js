@@ -103,7 +103,11 @@ function update(dt){
       if(dy&&!collides(player.x,player.y+dy))player.y+=dy;
     }
   }
-
+if(player.hidden && enemy.mode==='chase'){
+  enemy.mode='wander';
+  enemy.timer=0;
+  $('stateHud').textContent='探索中';
+}
   // 敵が巡回中に方向を変更
   enemy.timer-=dt;
   if(enemy.mode!=='chase'&&enemy.timer<=0){
