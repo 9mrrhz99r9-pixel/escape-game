@@ -56,7 +56,7 @@ function drawCharacter(x,y,type){
     if(im&&im.complete&&im.naturalWidth){
       const fw=im.naturalWidth/4;
       const fh=im.naturalHeight;
-      ctx.drawImage(im,0,0,fw,fh,px-12,py-14,24,24);
+      ctx.drawImage(im,0,0,fw,fh,px-16,py-20,32,40);
     }else{
       ctx.fillStyle='#191719';
       ctx.fillRect(px-7,py-10,14,20);
