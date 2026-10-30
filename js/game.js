@@ -112,7 +112,12 @@ function update(dt){
       Math.floor(Math.random()*4)
     ];
   }
-
+// プレイヤーが隠れたら追跡を解除し、敵を停止する
+if(player.hidden && enemy.mode==='chase'){
+  enemy.mode='wander';
+  enemy.timer=1.5;
+  $('stateHud').textContent='探索中';
+}
   // プレイヤーを発見できるのは同じ部屋だけ
   if(enemy.room===room){
     let dx=player.x-enemy.x;
