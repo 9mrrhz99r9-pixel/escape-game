@@ -329,7 +329,7 @@ function finish(win){
     $('panelText').innerHTML='敵に捕まってしまった。<br>タイトルからやり直そう。';
     $('startBtn').textContent='はじめから';
     $('helpBtn').textContent='操作方法';
-  },1000);
+  },2000);
 }
 function act(){if(!gameStarted)return;const r=rooms[room];if(player.hidden){player.hidden=false;notify('ロッカーから出た');return}
 // door nearby
