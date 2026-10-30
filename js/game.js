@@ -406,6 +406,9 @@ gameArea.onpointerdown=e=>{
   gameArea.setPointerCapture(e.pointerId);
   setStick(e);
 };
+gameArea.onpointermove=e=>{
+  if(active)setStick(e);
+};
 function release(){
   active=false;
   move={x:0,y:0};
@@ -413,8 +416,8 @@ function release(){
   pad.style.display='none';
 }
 
-gameCanvas.onpointerup=release;
-gameCanvas.onpointercancel=release;
+gameArea.onpointerup=release;
+gameArea.onpointercancel=release;
 
 window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')move.x=-1;if(e.key==='ArrowRight'||e.key==='d')move.x=1;if(e.key==='ArrowUp'||e.key==='w')move.y=-1;if(e.key==='ArrowDown'||e.key==='s')move.y=1;if(e.key==='Shift')running=true;if(e.key===' '||e.key==='Enter')act()});window.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','a','d'].includes(e.key))move.x=0;if(['ArrowUp','ArrowDown','w','s'].includes(e.key))move.y=0;if(e.key==='Shift')running=false});
 function loop(t){if(!gameStarted)return;let dt=Math.min(.04,(t-last)/1000||0);last=t;update(dt);draw();requestAnimationFrame(loop)}
