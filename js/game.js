@@ -386,10 +386,26 @@ gameCanvas.onpointerdown=e=>{
   setStick(e);
 };
 
-gameCanvas.onpointermove=e=>{
-  if(active)setStick(e);
-};
+const gameArea=$('gamewrap');
 
+gameArea.onpointerdown=e=>{
+  if(!gameStarted||gameOver||won)return;
+
+  // HUDやメニューなどを触った場合は無視
+  if(e.target.closest('button,.hud,.message,.overlay'))return;
+
+  e.preventDefault();
+  active=true;
+  originX=e.clientX;
+  originY=e.clientY;
+
+  pad.style.left=(originX-40)+'px';
+  pad.style.top=(originY-40)+'px';
+  pad.style.display='block';
+
+  gameArea.setPointerCapture(e.pointerId);
+  setStick(e);
+};
 function release(){
   active=false;
   move={x:0,y:0};
