@@ -79,7 +79,19 @@ function drawCharacter(x,y,type){
     }
   }
 }
-function collides(x,y){if(x<1||x>W-1||y<1||y>H-1)return true;const r=rooms[room];if(r.doors.some(d=>Math.abs(x-(d.x+.5))<.65&&Math.abs(y-(d.y+.5))<.65))return false;for(const [fx,fy] of r.furniture)if(x>fx-.1&&x<fx+1.35&&y>fy-.1&&y<fy+1.25)return true;for(const [fx,fy] of r.lockers)if(x>fx-.1&&x<fx+1.25&&y>fy-.1&&y<fy+1.25)return true;return false}
+
+function collides(x,y,roomId=room){
+  if(x<1||x>W-1||y<1||y>H-1)return true;
+  const r=rooms[roomId];
+  if(r.doors.some(d=>Math.abs(x-(d.x+.5))<.65&&Math.abs(y-(d.y+.5))<.65))return false;
+  for(const [fx,fy] of r.furniture){
+    if(x>fx-.1&&x<fx+1.35&&y>fy-.1&&y<fy+1.25)return true;
+  }
+  for(const [fx,fy] of r.lockers){
+    if(x>fx-.1&&x<fx+1.25&&y>fy-.1&&y<fy+1.25)return true;
+  }
+  return false;
+}
 function direction(dx,dy){if(Math.abs(dx)>Math.abs(dy))return dx>0?'right':'left';return dy>0?'down':'up'}
 function update(dt){
   if(!gameStarted||gameOver||won)return;
