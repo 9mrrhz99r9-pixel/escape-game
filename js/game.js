@@ -302,7 +302,35 @@ function update(dt){
     $('stateHud').textContent='探索中';
   }
 }
-function finish(win){gameOver=!win;won=win;gameStarted=false;$('overlay').style.display='flex';$('panelTitle').textContent=win?'ESCAPED':'GAME OVER';$('panelText').innerHTML=win?'出口から脱出した。<br>試作品クリア！':'敵に捕まってしまった。<br>タイトルからやり直そう。';$('startBtn').textContent='はじめから';$('helpBtn').textContent='操作方法';}
+function finish(win){
+  if(win){
+    gameOver=false;
+    won=true;
+    gameStarted=false;
+    $('overlay').style.display='flex';
+    $('panelTitle').textContent='ESCAPED';
+    $('panelText').innerHTML='出口から脱出した。<br>試作品クリア！';
+    $('startBtn').textContent='はじめから';
+    $('helpBtn').textContent='操作方法';
+    return;
+  }
+
+  gameOver=true;
+  won=false;
+  gameStarted=false;
+
+  const scare=$('jumpscare');
+  scare.style.display='block';
+
+  setTimeout(()=>{
+    scare.style.display='none';
+    $('overlay').style.display='flex';
+    $('panelTitle').textContent='GAME OVER';
+    $('panelText').innerHTML='敵に捕まってしまった。<br>タイトルからやり直そう。';
+    $('startBtn').textContent='はじめから';
+    $('helpBtn').textContent='操作方法';
+  },1000);
+}
 function act(){if(!gameStarted)return;const r=rooms[room];if(player.hidden){player.hidden=false;notify('ロッカーから出た');return}
 // door nearby
 const d=r.doors.find(d=>Math.hypot(player.x-(d.x+.5),player.y-(d.y+.5))<1.5);if(d){if(d.to===2&&!hasKey&&!unlocked){notify('鍵がかかっている');return}if(d.to===2){unlocked=true;finish(true);return}room=d.to;player.x=d.tx+.5;player.y=d.ty+.5;$('roomLabel').textContent='ROOM 0'+(room+1)+' / '+rooms[room].name;notify(rooms[room].name+'に入った');return}
