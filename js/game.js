@@ -69,11 +69,7 @@ function drawCharacter(x,y,type){
   }else{
     const im=imgs.student_idle;
     if(im&&im.complete&&im.naturalWidth){
-      ctx.drawImage(
-        im,0,0,
-        im.naturalWidth/4,im.naturalHeight/4,
-        px-12,py-14,24,24
-      );
+      ctx.drawImage(im,0,0,im.naturalWidth/4,im.naturalHeight/4,px-12,py-14,24,24);
     }else{
       ctx.fillStyle='#d6d9d2';
       ctx.fillRect(px-6,py-9,12,17);
