@@ -342,7 +342,64 @@ for(const [x,y] of r.furniture){if(Math.hypot(player.x-(x+.5),player.y-(y+.5))<1
 notify('近くに調べられるものはない');}
 function help(){ $('panelTitle').textContent='操作方法';$('panelText').innerHTML='左のパッド：移動<br>走る：移動速度アップ<br>調べる / 開ける：鍵・ドア・家具<br>隠れる：近くのロッカー<br>敵の正面に入らないように進もう。';$('startBtn').textContent='ゲームに戻る';$('helpBtn').style.display='none';$('overlay').style.display='flex';}
 $('startBtn').onclick=()=>{if(gameStarted){$('overlay').style.display='none';return} $('helpBtn').style.display='';reset()};$('helpBtn').onclick=help;$('actBtn').onpointerdown=e=>{e.preventDefault();act()};$('runBtn').onpointerdown=e=>{e.preventDefault();running=true;$('runBtn').classList.add('active')};['pointerup','pointercancel','pointerleave'].forEach(ev=>$('runBtn').addEventListener(ev,()=>{running=false;$('runBtn').classList.remove('active')}));$('hideBtn').onclick=()=>{if(!gameStarted)return;if(player.hidden){player.hidden=false;notify('ロッカーから出た')}else{const r=rooms[room],near=r.lockers.some(([x,y])=>Math.hypot(player.x-(x+.5),player.y-(y+.5))<1.5);if(near){player.hidden=true;notify('ロッカーに隠れた')}else notify('近くにロッカーがない')}};$('menuBtn').onclick=()=>{if(!gameStarted)return;$('panelTitle').textContent='PAUSE';$('panelText').innerHTML='ゲームを一時停止中';$('startBtn').textContent='ゲームに戻る';$('helpBtn').style.display='';$('overlay').style.display='flex'};
-let active=false,padRect=null;const pad=$('pad'),stick=$('stick');function setStick(e){padRect=pad.getBoundingClientRect();let cx=padRect.left+padRect.width/2,cy=padRect.top+padRect.height/2,dx=e.clientX-cx,dy=e.clientY-cy,max=31,len=Math.hypot(dx,dy)||1;if(len>max){dx=dx/len*max;dy=dy/len*max}move={x:dx/max,y:dy/max};stick.style.transform=`translate(${dx}px,${dy}px)`}pad.onpointerdown=e=>{active=true;pad.setPointerCapture(e.pointerId);setStick(e)};pad.onpointermove=e=>{if(active)setStick(e)};function release(){active=false;move={x:0,y:0};stick.style.transform='translate(0,0)'}pad.onpointerup=release;pad.onpointercancel=release;
+
+let active=false,padRect=null;
+const pad=$('pad'),stick=$('stick');
+const gameCanvas=$('game');
+let originX=0,originY=0;
+
+pad.style.display='none';
+pad.style.position='fixed';
+pad.style.transform='none';
+pad.style.zIndex='20';
+
+function setStick(e){
+  let dx=e.clientX-originX;
+  let dy=e.clientY-originY;
+  const max=31;
+  const len=Math.hypot(dx,dy)||1;
+
+  if(len>max){
+    dx=dx/len*max;
+    dy=dy/len*max;
+  }
+
+  move={x:dx/max,y:dy/max};
+  stick.style.transform=`translate(${dx}px,${dy}px)`;
+}
+
+gameCanvas.style.touchAction='none';
+
+gameCanvas.onpointerdown=e=>{
+  if(!gameStarted||gameOver||won)return;
+  e.preventDefault();
+
+  active=true;
+  originX=e.clientX;
+  originY=e.clientY;
+
+  pad.style.left=(originX-40)+'px';
+  pad.style.top=(originY-40)+'px';
+  pad.style.display='block';
+
+  gameCanvas.setPointerCapture(e.pointerId);
+  setStick(e);
+};
+
+gameCanvas.onpointermove=e=>{
+  if(active)setStick(e);
+};
+
+function release(){
+  active=false;
+  move={x:0,y:0};
+  stick.style.transform='translate(0,0)';
+  pad.style.display='none';
+}
+
+gameCanvas.onpointerup=release;
+gameCanvas.onpointercancel=release;
+
 window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')move.x=-1;if(e.key==='ArrowRight'||e.key==='d')move.x=1;if(e.key==='ArrowUp'||e.key==='w')move.y=-1;if(e.key==='ArrowDown'||e.key==='s')move.y=1;if(e.key==='Shift')running=true;if(e.key===' '||e.key==='Enter')act()});window.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','a','d'].includes(e.key))move.x=0;if(['ArrowUp','ArrowDown','w','s'].includes(e.key))move.y=0;if(e.key==='Shift')running=false});
 function loop(t){if(!gameStarted)return;let dt=Math.min(.04,(t-last)/1000||0);last=t;update(dt);draw();requestAnimationFrame(loop)}
 // Render preview behind title overlay
