@@ -93,6 +93,7 @@ function collides(x,y,roomId=room){
   return false;
 }
 function direction(dx,dy){if(Math.abs(dx)>Math.abs(dy))return dx>0?'right':'left';return dy>0?'down':'up'}
+
 function update(dt){
   if(!gameStarted||gameOver||won)return;
 
@@ -103,24 +104,32 @@ function update(dt){
 
   // プレイヤー移動
   if(!player.hidden){
-    let speed=running?3.0:1.85,dx=0,dy=0;
+    const speed=running?3.0:1.85;
+    let dx=0,dy=0;
+
     if(Math.abs(move.x)>Math.abs(move.y)){
       dx=Math.sign(move.x)*speed*dt;
     }else if(move.y!==0){
       dy=Math.sign(move.y)*speed*dt;
     }
+
     if(dx||dy){
       player.dir=direction(dx,dy);
       if(dx&&!collides(player.x+dx,player.y))player.x+=dx;
       if(dy&&!collides(player.x,player.y+dy))player.y+=dy;
     }
   }
-if(player.hidden && enemy.mode==='chase'){
-  enemy.mode='wander';
-  enemy.timer=0;
-  $('stateHud').textContent='探索中';
-}
-  // 敵が巡回中に方向を変更
+
+  // 別の部屋にいる間に隠れた場合は追跡解除
+  // 同じ部屋でチェイス中に隠れた場合は追跡を継続
+  if(player.hidden&&enemy.mode==='chase'&&enemy.room!==room){
+    enemy.mode='wander';
+    enemy.timer=1.5;
+    $('stateHud').textContent='探索中';
+    notify('敵をやり過ごした');
+  }
+
+  // 巡回中の方向変更
   enemy.timer-=dt;
   if(enemy.mode!=='chase'&&enemy.timer<=0){
     enemy.timer=.8+Math.random()*1.6;
@@ -128,37 +137,27 @@ if(player.hidden && enemy.mode==='chase'){
       Math.floor(Math.random()*4)
     ];
   }
-// プレイヤーが隠れたら追跡を解除し、敵を停止する
-if(player.hidden && enemy.mode==='chase'){
-  enemy.mode='wander';
-  enemy.timer=1.5;
-  $('stateHud').textContent='探索中';
-}
-  // プレイヤーを発見できるのは同じ部屋だけ
-  if(enemy.room===room){
-    let dx=player.x-enemy.x;
-    let dy=player.y-enemy.y;
-    let dist=Math.hypot(dx,dy);
 
+  // 同じ部屋にいる場合だけプレイヤーを発見
+  if(enemy.room===room&&!player.hidden){
+    const dx=player.x-enemy.x;
+    const dy=player.y-enemy.y;
+    const dist=Math.hypot(dx,dy);
+    const angle=Math.atan2(dy,dx);
     const facing=Math.atan2(
-      Math.sin(Math.atan2(dy,dx)-enemy.dir),
-      Math.cos(Math.atan2(dy,dx)-enemy.dir)
+      Math.sin(angle-enemy.dir),
+      Math.cos(angle-enemy.dir)
     );
 
-    const sees=!player.hidden&&dist<3.6&&Math.abs(facing)<.58;
-
-    if(sees){
+    if(dist<3.6&&Math.abs(facing)<.58){
       enemy.mode='chase';
-      enemy.dir=Math.abs(dx)>Math.abs(dy)
-        ?(dx>0?0:Math.PI)
-        :(dy>0?Math.PI/2:-Math.PI/2);
       $('stateHud').textContent='!! 発見された !!';
     }
   }
 
   const es=enemy.mode==='chase'?1.5:.65;
 
-  // 追跡中で、別の部屋にいる場合は次のドアを探す
+  // 敵が別の部屋にいる場合、プレイヤーの部屋への経路を探す
   if(enemy.mode==='chase'&&enemy.room!==room){
     const visited=new Set([enemy.room]);
     const queue=[{room:enemy.room,firstDoor:null}];
@@ -183,80 +182,125 @@ if(player.hidden && enemy.mode==='chase'){
     }
 
     if(nextDoor){
-      // ドアの内側まで移動する
       const tx=nextDoor.x===W-1?W-1.5:
                nextDoor.x===0?1.5:nextDoor.x+.5;
       const ty=nextDoor.y+.5;
       const dx=tx-enemy.x;
       const dy=ty-enemy.y;
+      const dist=Math.hypot(dx,dy);
 
-      if(Math.hypot(dx,dy)<.35){
-        // ドアを通って次の部屋へ
+      if(dist<.35){
         enemy.room=nextDoor.to;
         enemy.x=nextDoor.tx+.5;
         enemy.y=nextDoor.ty+.5;
 
-        // 入室時に隠れていれば追跡解除
+        // 入室前に隠れていれば追跡解除
         if(enemy.room===room&&player.hidden){
           enemy.mode='wander';
           enemy.timer=1.5;
           $('stateHud').textContent='探索中';
           notify('敵をやり過ごした');
         }
-      }else if(Math.abs(dx)>Math.abs(dy)){
-        enemy.dir=dx>0?0:Math.PI;
-        const nx=enemy.x+Math.sign(dx)*Math.min(Math.abs(dx),es*dt);
-        if(!collides(nx,enemy.y,enemy.room))enemy.x=nx;
       }else{
-        enemy.dir=dy>0?Math.PI/2:-Math.PI/2;
-        const ny=enemy.y+Math.sign(dy)*Math.min(Math.abs(dy),es*dt);
-        if(!collides(enemy.x,ny,enemy.room))enemy.y=ny;
+        const step=Math.min(es*dt,dist);
+        const dirs=Math.abs(dx)>Math.abs(dy)
+          ?(dx>0?[0,Math.PI/2,-Math.PI/2,Math.PI]:
+                [Math.PI,Math.PI/2,-Math.PI/2,0])
+          :(dy>0?[Math.PI/2,0,Math.PI,-Math.PI/2]:
+                [-Math.PI/2,0,Math.PI,Math.PI/2]);
+
+        for(const dir of dirs){
+          const nx=enemy.x+Math.cos(dir)*step;
+          const ny=enemy.y+Math.sin(dir)*step;
+          if(!collides(nx,ny,enemy.room)){
+            enemy.x=nx;
+            enemy.y=ny;
+            enemy.dir=dir;
+            break;
+          }
+        }
       }
     }
   }else if(enemy.room===room){
-    // 同じ部屋にいる場合の移動
-    let dx=player.x-enemy.x;
-    let dy=player.y-enemy.y;
+    // 同じ部屋での移動
+    const chasing=enemy.mode==='chase';
+    const dx=player.x-enemy.x;
+    const dy=player.y-enemy.y;
 
-    if(enemy.mode==='chase'&&!player.hidden){
-  const deadZone=0.15;
-  if(Math.abs(dx)>Math.abs(dy)+deadZone){
-    enemy.dir=dx>0?0:Math.PI;
-  }else if(Math.abs(dy)>Math.abs(dx)+deadZone){
-    enemy.dir=dy>0?Math.PI/2:-Math.PI/2;
-  }
-}
+    if(chasing){
+      // 隠れている場合も、同じ部屋ならロッカーの位置を追う
+      const dirs=Math.abs(dx)>Math.abs(dy)
+        ?(dx>=0?[0,Math.PI/2,-Math.PI/2,Math.PI]:
+               [Math.PI,Math.PI/2,-Math.PI/2,0])
+        :(dy>=0?[Math.PI/2,0,Math.PI,-Math.PI/2]:
+               [-Math.PI/2,0,Math.PI,Math.PI/2]);
 
-    const nx=enemy.x+Math.cos(enemy.dir)*es*dt;
-    const ny=enemy.y+Math.sin(enemy.dir)*es*dt;
+      // 通れる方向のうち、プレイヤーに近づける方向を優先
+      const candidates=[];
+      const step=es*dt;
 
-    if(enemy.mode==='chase'){
-      if(enemy.dir===0||enemy.dir===Math.PI){
-        if(!collides(nx,enemy.y,enemy.room))enemy.x=nx;
-      }else{
-        if(!collides(enemy.x,ny,enemy.room))enemy.y=ny;
+      for(const dir of dirs){
+        const nx=enemy.x+Math.cos(dir)*step;
+        const ny=enemy.y+Math.sin(dir)*step;
+
+        if(!collides(nx,ny,enemy.room)){
+          candidates.push({
+            x:nx,
+            y:ny,
+            dir,
+            dist:Math.hypot(player.x-nx,player.y-ny)
+          });
+        }
+      }
+
+      if(candidates.length){
+        const bestDist=Math.min(...candidates.map(c=>c.dist));
+        const best=candidates.filter(c=>c.dist<=bestDist+.001);
+        const chosen=best[Math.floor(Math.random()*best.length)];
+
+        enemy.x=chosen.x;
+        enemy.y=chosen.y;
+        enemy.dir=chosen.dir;
       }
     }else{
-      if(collides(nx,ny,enemy.room)){
-        enemy.dir=[0,Math.PI/2,Math.PI,-Math.PI/2][
-          Math.floor(Math.random()*4)
-        ];
-      }else if(enemy.dir===0||enemy.dir===Math.PI){
+      // 巡回中は障害物にぶつかったら方向を変える
+      const nx=enemy.x+Math.cos(enemy.dir)*es*dt;
+      const ny=enemy.y+Math.sin(enemy.dir)*es*dt;
+
+      if(!collides(nx,ny,enemy.room)){
         enemy.x=nx;
-      }else{
         enemy.y=ny;
+      }else{
+        const dirs=[0,Math.PI/2,Math.PI,-Math.PI/2]
+          .sort(()=>Math.random()-.5);
+
+        for(const dir of dirs){
+          const tx=enemy.x+Math.cos(dir)*es*dt;
+          const ty=enemy.y+Math.sin(dir)*es*dt;
+
+          if(!collides(tx,ty,enemy.room)){
+            enemy.dir=dir;
+            enemy.x=tx;
+            enemy.y=ty;
+            break;
+          }
+        }
       }
     }
   }
 
   // 捕まったか判定
-  if(!player.hidden&&room===enemy.room&&
+  // 同じ部屋でチェイス中なら、隠れていても捕まる
+  if(enemy.mode==='chase'&&room===enemy.room&&
      Math.hypot(player.x-enemy.x,player.y-enemy.y)<.48){
     finish(false);
+    return;
   }
 
   $('itemHud').textContent='所持品：'+(hasKey?'鍵':'なし');
-  if(enemy.mode!=='chase')$('stateHud').textContent='探索中';
+  if(enemy.mode!=='chase'){
+    $('stateHud').textContent='探索中';
+  }
 }
 function finish(win){gameOver=!win;won=win;gameStarted=false;$('overlay').style.display='flex';$('panelTitle').textContent=win?'ESCAPED':'GAME OVER';$('panelText').innerHTML=win?'出口から脱出した。<br>試作品クリア！':'敵に捕まってしまった。<br>タイトルからやり直そう。';$('startBtn').textContent='はじめから';$('helpBtn').textContent='操作方法';}
 function act(){if(!gameStarted)return;const r=rooms[room];if(player.hidden){player.hidden=false;notify('ロッカーから出た');return}
