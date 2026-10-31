@@ -36,7 +36,7 @@ for(let x=0;x<W;x++){
 }
 for(let y=1;y<H-1;y++){
   if(!r.doors.some(d=>d.x===0&&d.y===y))
-    tileImg('wall',-camera.x,y*TILE-camera.y,TILE,TILE,90);
+    tileImg('wall',(W-1)*TILE-camera.x,y*TILE-camera.y,TILE,TILE,90);
 
   if(!r.doors.some(d=>d.x===W-1&&d.y===y))
     tileImg('wall',(W-1)*TILE,y*TILE,TILE,TILE,90);
