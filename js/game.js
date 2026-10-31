@@ -31,7 +31,7 @@ function draw(){
   const r=rooms[room];for(let y=0;y<H;y++)for(let x=0;x<W;x++){tileImg((x+y)%7===0?'floor_alt':'floor',x*TILE-camera.x,y*TILE-camera.y);if((x*3+y*7+room)%37===0)tileImg('floor_horror',x*TILE-camera.x,y*TILE-camera.y)}
 // room perimeter walls, door gaps
 for(let x=0;x<W;x++){
-  tileImg('wall',x*TILE,0);
+  tileImg('wall',x*TILE-camera.x,-camera.y);
   tileImg('wall',x*TILE,(H-1)*TILE);
 }
 for(let y=1;y<H-1;y++){
