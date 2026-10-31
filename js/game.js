@@ -32,7 +32,7 @@ function draw(){
 // room perimeter walls, door gaps
 for(let x=0;x<W;x++){
   tileImg('wall',x*TILE-camera.x,-camera.y);
-  tileImg('wall',x*TILE,(H-1)*TILE);
+  tileImg('wall',x*TILE-camera.x,(H-1)*TILE-camera.y);
 }
 for(let y=1;y<H-1;y++){
   if(!r.doors.some(d=>d.x===0&&d.y===y))
