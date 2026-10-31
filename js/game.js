@@ -3,6 +3,7 @@ const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');ctx.ima
 const $=id=>document.getElementById(id);const imgs={};for(const n of ['floor','floor_alt','floor_horror','floor_decayed','wall','wall_cracked','locker','locker_decayed','desk','chair','door','window','board','cubby','student_idle','student_walk','wall_drip','enemy_sprite_sheet']){imgs[n]=new Image();imgs[n].src='assets/'+n+'.png'}
 const TILE=window.FLOOR1_MAP.tileSize,W=window.FLOOR1_MAP.width,H=window.FLOOR1_MAP.height,rooms=window.FLOOR1_MAP.rooms;
 let room=0,player={x:3.5,y:4.5,dir:'down',hidden:false},enemy={x:8,y:4,dir:0,mode:'wander',timer:0},hasKey=false,unlocked=false,gameOver=false,won=false,running=false,move={x:0,y:0},last=0,msgTimer=0,gameStarted=false;
+let camera={x:0,y:0};
 function chooseKey(){rooms.forEach(r=>r.keySpot=null);const ri=Math.random()<.5?0:1;const candidates=ri===0?[[6,5],[9,2],[3,5]]:[[4,4],[8,2],[6,6]];rooms[ri].keySpot=candidates[Math.floor(Math.random()*candidates.length)];}
 function reset(){room=0;player={x:3.5,y:4.5,dir:'down',hidden:false};enemy={x:8,y:4,dir:Math.PI,mode:'wander',timer:0,room:0};hasKey=false;unlocked=false;gameOver=false;won=false;running=false;chooseKey();$('overlay').style.display='none';$('roomLabel').textContent='ROOM 01';$('itemHud').textContent='所持品：なし';$('stateHud').textContent='探索中';gameStarted=true;notify('鍵を探して出口へ向かおう');last=performance.now();requestAnimationFrame(loop)}
 function notify(t){const e=$('message');e.textContent=t;e.style.display='block';msgTimer=2.2}
