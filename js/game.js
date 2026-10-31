@@ -22,7 +22,13 @@ function tileImg(name,x,y,w=TILE,h=TILE,angle=0){
   ctx.drawImage(im,-w/2,-h/2,w,h);
   ctx.restore();
 }
-function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);const r=rooms[room];for(let y=0;y<H;y++)for(let x=0;x<W;x++){tileImg((x+y)%7===0?'floor_alt':'floor',x*TILE,y*TILE);if((x*3+y*7+room)%37===0)tileImg('floor_horror',x*TILE,y*TILE)}
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  camera.x=player.x*TILE-canvas.width/2;
+  camera.y=player.y*TILE-canvas.height/2;
+
+  const r=rooms[room];for(let y=0;y<H;y++)for(let x=0;x<W;x++){tileImg((x+y)%7===0?'floor_alt':'floor',x*TILE,y*TILE);if((x*3+y*7+room)%37===0)tileImg('floor_horror',x*TILE,y*TILE)}
 // room perimeter walls, door gaps
 for(let x=0;x<W;x++){
   tileImg('wall',x*TILE,0);
