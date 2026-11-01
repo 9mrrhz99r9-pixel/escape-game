@@ -47,7 +47,7 @@ if(room===0){tileImg('window',3*TILE,0,64,32);tileImg('board',7*TILE,0,64,32)}el
 for(const d of r.doors){ctx.fillStyle='#070909';ctx.fillRect(d.x*TILE-camera.x,d.y*TILE-camera.y,TILE,TILE);
 tileImg('door',d.x*TILE-16-camera.x,d.y*TILE-16-camera.y,64,64);if(d.to===2&&unlocked){ctx.fillStyle='#b7c9bc';ctx.fillRect(d.x*TILE+10,d.y*TILE+5,12,22)}}
 // furniture
-for(const [x,y,type] of r.furniture)tileImg(type,x*TILE,y*TILE,48,48);for(const [x,y] of r.lockers)tileImg('locker',x*TILE,y*TILE,48,48);
+for(const [x,y,type] of r.furniture)tileImg(type,x*TILE-camera.x,y*TILE-camera.y,48,48);for(const [x,y] of r.lockers)tileImg('locker',x*TILE,y*TILE,48,48);
 // key on floor
 if(!hasKey&&r.keySpot){const [kx,ky]=r.keySpot;ctx.fillStyle='#e7c56e';ctx.fillRect(kx*TILE+12,ky*TILE+12,10,4);ctx.fillRect(kx*TILE+19,ky*TILE+13,3,8);ctx.fillRect(kx*TILE+17,ky*TILE+18,3,3);}
 // enemy cone
