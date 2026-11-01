@@ -44,7 +44,8 @@ for(let y=1;y<H-1;y++){
 // windows and decorations
 if(room===0){tileImg('window',3*TILE,0,64,32);tileImg('board',7*TILE,0,64,32)}else if(room===1){tileImg('wall_drip',5*TILE,0,32,32);tileImg('window',7*TILE,0,64,32)}else{tileImg('wall_cracked',3*TILE,0);tileImg('wall_drip',8*TILE,0,32,32)}
 // doors
-for(const d of r.doors){ctx.fillStyle='#070909';ctx.fillRect(d.x*TILE,d.y*TILE,TILE,TILE);tileImg('door',d.x*TILE-16,d.y*TILE-16,64,64);if(d.to===2&&unlocked){ctx.fillStyle='#b7c9bc';ctx.fillRect(d.x*TILE+10,d.y*TILE+5,12,22)}}
+for(const d of r.doors){ctx.fillStyle='#070909';ctx.fillRect(d.x*TILE-camera.x,d.y*TILE-camera.y,TILE,TILE);
+tileImg('door',d.x*TILE-16-camera.x,d.y*TILE-16-camera.y,64,64);if(d.to===2&&unlocked){ctx.fillStyle='#b7c9bc';ctx.fillRect(d.x*TILE+10,d.y*TILE+5,12,22)}}
 // furniture
 for(const [x,y,type] of r.furniture)tileImg(type,x*TILE,y*TILE,48,48);for(const [x,y] of r.lockers)tileImg('locker',x*TILE,y*TILE,48,48);
 // key on floor
