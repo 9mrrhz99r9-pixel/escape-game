@@ -7,6 +7,8 @@ window.FLOOR1_MAP = {
   // 現在の試作マップと同じサイズ
   width: 12,
   height: 8,
+  worldWidth: 40,
+  worldHeight: 28,
 
   start: {
     x: 3.5,
