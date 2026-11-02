@@ -57,7 +57,7 @@ if(!player.hidden)drawCharacter(player.x,player.y,'player');else{ctx.fillStyle='
 const g=ctx.createRadialGradient(192,128,45,192,128,245);g.addColorStop(0,'#00000000');g.addColorStop(1,'#00000080');ctx.fillStyle=g;ctx.fillRect(0,0,384,256);
 }
 function drawCharacter(x,y,type){
-  const px=x*TILE,py=y*TILE;
+  const px=x*TILE-camera.x,py=y*TILE-camera.y;
 
   if(type==='enemy'){
     const im=imgs.enemy_sprite_sheet;
