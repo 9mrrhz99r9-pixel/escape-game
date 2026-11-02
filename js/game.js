@@ -25,8 +25,15 @@ function tileImg(name,x,y,w=TILE,h=TILE,angle=0){
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  camera.x=player.x*TILE-canvas.width/2;
-  camera.y=player.y*TILE-canvas.height/2;
+  camera.x=Math.max(0,Math.min(
+  player.x*TILE-canvas.width/2,
+  W*TILE-canvas.width
+));
+
+camera.y=Math.max(0,Math.min(
+  player.y*TILE-canvas.height/2,
+  H*TILE-canvas.height
+));
 
   const sx=x=>x*TILE-camera.x;
   const sy=y=>y*TILE-camera.y;
