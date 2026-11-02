@@ -5,8 +5,8 @@ window.FLOOR1_MAP = {
   tileSize: 32,
 
   // 現在の試作マップと同じサイズ
-  width: 40,
-  height: 28,
+  width: 12,
+  height: 8,
 
   start: {
     x: 3.5,
