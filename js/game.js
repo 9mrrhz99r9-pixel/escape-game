@@ -28,33 +28,95 @@ function draw(){
   camera.x=player.x*TILE-canvas.width/2;
   camera.y=player.y*TILE-canvas.height/2;
 
-  const r=rooms[room];for(let y=0;y<H;y++)for(let x=0;x<W;x++){tileImg((x+y)%7===0?'floor_alt':'floor',x*TILE-camera.x,y*TILE-camera.y);if((x*3+y*7+room)%37===0)tileImg('floor_horror',x*TILE-camera.x,y*TILE-camera.y)}
-// room perimeter walls, door gaps
-for(let x=0;x<W;x++){
-  tileImg('wall',x*TILE-camera.x,-camera.y);
-  tileImg('wall',x*TILE-camera.x,(H-1)*TILE-camera.y);
-}
-for(let y=1;y<H-1;y++){
-  if(!r.doors.some(d=>d.x===0&&d.y===y))
-    tileImg('wall',(W-1)*TILE-camera.x,y*TILE-camera.y,TILE,TILE,90);
+  const sx=x=>x*TILE-camera.x;
+  const sy=y=>y*TILE-camera.y;
+  const r=rooms[room];
 
-  if(!r.doors.some(d=>d.x===W-1&&d.y===y))
-    tileImg('wall',(W-1)*TILE,y*TILE,TILE,TILE,90);
-}
-// windows and decorations
-if(room===0){tileImg('window',3*TILE,0,64,32);tileImg('board',7*TILE,0,64,32)}else if(room===1){tileImg('wall_drip',5*TILE,0,32,32);tileImg('window',7*TILE,0,64,32)}else{tileImg('wall_cracked',3*TILE,0);tileImg('wall_drip',8*TILE,0,32,32)}
-// doors
-for(const d of r.doors){ctx.fillStyle='#070909';ctx.fillRect(d.x*TILE-camera.x,d.y*TILE-camera.y,TILE,TILE);
-tileImg('door',d.x*TILE-16-camera.x,d.y*TILE-16-camera.y,64,64);if(d.to===2&&unlocked){ctx.fillStyle='#b7c9bc';ctx.fillRect(d.x*TILE+10,d.y*TILE+5,12,22)}}
-// furniture
-for(const [x,y,type] of r.furniture)tileImg(type,x*TILE-camera.x,y*TILE-camera.y,48,48);for(const [x,y] of r.lockers)tileImg('locker',x*TILE-camera.x,y*TILE-camera.y,48,48);
-// key on floor
-if(!hasKey&&r.keySpot){const [kx,ky]=r.keySpot;ctx.fillStyle='#e7c56e';ctx.fillRect(kx*TILE+12,ky*TILE+12,10,4);ctx.fillRect(kx*TILE+19,ky*TILE+13,3,8);ctx.fillRect(kx*TILE+17,ky*TILE+18,3,3);}
-// enemy cone
-if(room===enemy.room)drawCharacter(enemy.x,enemy.y,'enemy');
-if(!player.hidden)drawCharacter(player.x,player.y,'player');else{ctx.fillStyle='#a7b3ad';ctx.font='12px sans-serif';ctx.fillText('隠れている',8,canvas.height-10)}
-// vignette
-const g=ctx.createRadialGradient(192,128,45,192,128,245);g.addColorStop(0,'#00000000');g.addColorStop(1,'#00000080');ctx.fillStyle=g;ctx.fillRect(0,0,384,256);
+  // floor
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      tileImg((x+y)%7===0?'floor_alt':'floor',sx(x),sy(y));
+      if((x*3+y*7+room)%37===0){
+        tileImg('floor_horror',sx(x),sy(y));
+      }
+    }
+  }
+
+  // walls
+  for(let x=0;x<W;x++){
+    tileImg('wall',sx(x),sy(0));
+    tileImg('wall',sx(x),sy(H-1));
+  }
+
+  for(let y=1;y<H-1;y++){
+    if(!r.doors.some(d=>d.x===0&&d.y===y)){
+      tileImg('wall',sx(0),sy(y),TILE,TILE,90);
+    }
+    if(!r.doors.some(d=>d.x===W-1&&d.y===y)){
+      tileImg('wall',sx(W-1),sy(y),TILE,TILE,90);
+    }
+  }
+
+  // windows and decorations
+  if(room===0){
+    tileImg('window',sx(3),sy(0),64,32);
+    tileImg('board',sx(7),sy(0),64,32);
+  }else if(room===1){
+    tileImg('wall_drip',sx(5),sy(0),32,32);
+    tileImg('window',sx(7),sy(0),64,32);
+  }else{
+    tileImg('wall_cracked',sx(3),sy(0));
+    tileImg('wall_drip',sx(8),sy(0),32,32);
+  }
+
+  // doors
+  for(const d of r.doors){
+    ctx.fillStyle='#070909';
+    ctx.fillRect(sx(d.x),sy(d.y),TILE,TILE);
+    tileImg('door',sx(d.x)-16,sy(d.y)-16,64,64);
+
+    if(d.to===2&&unlocked){
+      ctx.fillStyle='#b7c9bc';
+      ctx.fillRect(sx(d.x)+10,sy(d.y)+5,12,22);
+    }
+  }
+
+  // furniture and lockers
+  for(const [x,y,type] of r.furniture){
+    tileImg(type,sx(x),sy(y),48,48);
+  }
+  for(const [x,y] of r.lockers){
+    tileImg('locker',sx(x),sy(y),48,48);
+  }
+
+  // key
+  if(!hasKey&&r.keySpot){
+    const [kx,ky]=r.keySpot;
+    ctx.fillStyle='#e7c56e';
+    ctx.fillRect(sx(kx)+12,sy(ky)+12,10,4);
+    ctx.fillRect(sx(kx)+19,sy(ky)+13,3,8);
+    ctx.fillRect(sx(kx)+17,sy(ky)+18,3,3);
+  }
+
+  // characters
+  if(room===enemy.room){
+    drawCharacter(enemy.x,enemy.y,'enemy');
+  }
+
+  if(!player.hidden){
+    drawCharacter(player.x,player.y,'player');
+  }else{
+    ctx.fillStyle='#a7b3ad';
+    ctx.font='12px sans-serif';
+    ctx.fillText('隠れている',8,canvas.height-10);
+  }
+
+  // vignette stays fixed to the screen
+  const g=ctx.createRadialGradient(192,128,45,192,128,245);
+  g.addColorStop(0,'#00000000');
+  g.addColorStop(1,'#00000080');
+  ctx.fillStyle=g;
+  ctx.fillRect(0,0,384,256);
 }
 function drawCharacter(x,y,type){
   const px=x*TILE-camera.x,py=y*TILE-camera.y;
