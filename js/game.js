@@ -68,7 +68,12 @@ for(let y=0;y<WORLD_H;y++){
       tileImg('wall',sx(WORLD_W-1),sy(y),TILE,TILE,90);
     }
   }
+// 校舎全体の壁
+const worldWalls=window.FLOOR1_MAP.walls||[];
 
+for(const [wx,wy] of worldWalls){
+  tileImg('wall',sx(wx),sy(wy));
+}
   // windows and decorations
   if(room===0){
     tileImg('window',sx(3),sy(0),64,32);
