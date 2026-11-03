@@ -32,7 +32,7 @@ function draw(){
 
   camera.x=Math.max(0,Math.min(
   player.x*TILE-canvas.width/2,
-  W*TILE-canvas.width
+  WORLD_W*TILE-canvas.width
 ));
 
 camera.y=Math.max(0,Math.min(
