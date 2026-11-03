@@ -168,7 +168,12 @@ function drawCharacter(x,y,type){
 }
 
 function collides(x,y,roomId=room){
-  if(x<1||x>W-1||y<1||y>H-1)return true;
+  if(
+  x<1||
+  x>WORLD_W-1||
+  y<1||
+  y>WORLD_H-1
+)return true;
 
   const r=rooms[roomId];
   
