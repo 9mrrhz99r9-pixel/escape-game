@@ -55,17 +55,17 @@ for(let y=0;y<WORLD_H;y++){
   }
 
   // walls
-  for(let x=0;x<W;x++){
+  for(let x=0;x<WORLD_W;x++){
     tileImg('wall',sx(x),sy(0));
-    tileImg('wall',sx(x),sy(H-1));
+    tileImg('wall',sx(x),sy(WORLD_H-1));
   }
 
-  for(let y=1;y<H-1;y++){
+  for(let y=1;y<WORLD_H-1;y++){
     if(!r.doors.some(d=>d.x===0&&d.y===y)){
       tileImg('wall',sx(0),sy(y),TILE,TILE,90);
     }
     if(!r.doors.some(d=>d.x===W-1&&d.y===y)){
-      tileImg('wall',sx(W-1),sy(y),TILE,TILE,90);
+      tileImg('wall',sx(WORLD_W-1),sy(y),TILE,TILE,90);
     }
   }
 
