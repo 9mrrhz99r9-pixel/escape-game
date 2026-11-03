@@ -14,6 +14,9 @@ window.FLOOR1_MAP = {
     x: 3.5,
     y: 4.5
   },
+  
+  // 校舎全体の壁座標
+walls: [],
 
   rooms: [
     {
