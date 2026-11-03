@@ -45,8 +45,8 @@ camera.y=Math.max(0,Math.min(
   const r=rooms[room];
 
   // floor
-  for(let y=0;y<H;y++){
-    for(let x=0;x<W;x++){
+for(let y=0;y<WORLD_H;y++){
+  for(let x=0;x<WORLD_W;x++){
       tileImg((x+y)%7===0?'floor_alt':'floor',sx(x),sy(y));
       if((x*3+y*7+room)%37===0){
         tileImg('floor_horror',sx(x),sy(y));
