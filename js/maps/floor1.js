@@ -7,28 +7,11 @@ window.FLOOR1_MAP = {
   // 現在の試作マップと同じサイズ
   width: 12,
   height: 8,
-  worldWidth: 40,
-  worldHeight: 28,
 
   start: {
     x: 3.5,
     y: 4.5
   },
-  
-  // 校舎全体の壁座標
-walls: [
-  // 上側の外壁
-  ...Array.from({length: 40}, (_,i) => [i, 1]),
-
-  // 下側の外壁
-  ...Array.from({length: 40}, (_,i) => [i, 26]),
-
-  // 左側の外壁
-  ...Array.from({length: 26}, (_,i) => [1, i+1]),
-
-  // 右側の外壁
-  ...Array.from({length: 26}, (_,i) => [38, i+1])
-],
 
   rooms: [
     {
