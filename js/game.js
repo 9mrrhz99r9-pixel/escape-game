@@ -53,9 +53,9 @@ for(let y=0;y<H;y++){
   }
 
   // walls
-  for(let x=0;x<WORLD_W;x++){
+  for(let x=0;x<W;x++){
     tileImg('wall',sx(x),sy(0));
-    tileImg('wall',sx(x),sy(WORLD_H-1));
+    tileImg('wall',sx(x),sy(H-1));
   }
 
   for(let y=1;y<WORLD_H-1;y++){
