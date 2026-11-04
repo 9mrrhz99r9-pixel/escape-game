@@ -16,6 +16,8 @@ window.FLOOR1_MAP = {
   rooms: [
     {
       name: "教室",
+      width: 12,
+      height: 8,
       doors: [{ x: 11, y: 3, to: 1, tx: 1, ty: 3 }],
       lockers: [[2, 2]],
       furniture: [
@@ -27,6 +29,8 @@ window.FLOOR1_MAP = {
     },
     {
       name: "廊下",
+      width: 12,
+      height: 8,
       doors: [
         { x: 0, y: 3, to: 0, tx: 10, ty: 3 },
         { x: 11, y: 5, to: 2, tx: 1, ty: 5 }
@@ -40,6 +44,8 @@ window.FLOOR1_MAP = {
     },
     {
       name: "準備室",
+      width: 12,
+      height: 8,
       doors: [{ x: 0, y: 5, to: 1, tx: 10, ty: 5 }],
       lockers: [[2, 2]],
       furniture: [
