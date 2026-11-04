@@ -165,13 +165,6 @@ function collides(x,y,roomId=room){
 
   const r=rooms[roomId];
   
-// 校舎全体の壁との衝突判定
-const walls=window.FLOOR1_MAP.walls||[];
-
-for(const [wx,wy] of walls){
-  if(x>wx-.1&&x<wx+1.1&&
-     y>wy-.1&&y<wy+1.1)return true;
-}
   if(r.doors.some(d=>
     Math.abs(x-(d.x+.5))<.65&&
     Math.abs(y-(d.y+.5))<.65
