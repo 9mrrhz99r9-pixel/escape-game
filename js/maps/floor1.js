@@ -16,7 +16,19 @@ window.FLOOR1_MAP = {
   },
   
   // 校舎全体の壁座標
-walls: [],
+walls: [
+  // 上側の外壁
+  ...Array.from({length: 40}, (_,i) => [i, 1]),
+
+  // 下側の外壁
+  ...Array.from({length: 40}, (_,i) => [i, 26]),
+
+  // 左側の外壁
+  ...Array.from({length: 26}, (_,i) => [1, i+1]),
+
+  // 右側の外壁
+  ...Array.from({length: 26}, (_,i) => [38, i+1])
+],
 
   rooms: [
     {
