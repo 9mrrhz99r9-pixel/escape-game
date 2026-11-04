@@ -30,12 +30,12 @@ function draw(){
 
   camera.x=Math.max(0,Math.min(
   player.x*TILE-canvas.width/2,
-  WORLD_W*TILE-canvas.width
+  W*TILE-canvas.width
 ));
 
 camera.y=Math.max(0,Math.min(
   player.y*TILE-canvas.height/2,
-  WORLD_H*TILE-canvas.height
+  H*TILE-canvas.height
 ));
 
   const sx=x=>x*TILE-camera.x;
