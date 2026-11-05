@@ -40,8 +40,8 @@ window.FLOOR1_MAP = {
     },
     {
       name: "準備室",
-      width: 16,
-      height: 10,
+      width: 12,
+      height: 8,
       doors: [{ x: 0, y: 5, to: 1, tx: 10, ty: 5 }],
       lockers: [[2, 2]],
       furniture: [
