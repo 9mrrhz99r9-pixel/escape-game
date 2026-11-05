@@ -37,10 +37,15 @@ function draw(){
   ctx.fillStyle='#000';
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  camera.x=Math.max(0,Math.min(
-  player.y*TILE-canvas.height/2,
-  H*TILE-canvas.height
-));
+    camera.x=Math.max(0,Math.min(
+    player.x*TILE-canvas.width/2,
+    W*TILE-canvas.width
+  ));
+
+  camera.y=Math.max(0,Math.min(
+    player.y*TILE-canvas.height/2,
+    H*TILE-canvas.height
+  ));
 
   const sx=x=>x*TILE-camera.x;
   const sy=y=>y*TILE-camera.y;
