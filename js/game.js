@@ -30,6 +30,18 @@ function tileImg(name,x,y,w=TILE,h=TILE,angle=0){
   ctx.drawImage(im,-w/2,-h/2,w,h);
   ctx.restore();
 }
+
+function drawWall(x,y,angle=0){
+  const im=imgs.wall;
+  if(!im||!im.complete||!im.naturalWidth)return;
+
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.rotate(angle*Math.PI/180);
+  ctx.drawImage(im,-16,-32,32,64);
+  ctx.restore();
+}
+
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
