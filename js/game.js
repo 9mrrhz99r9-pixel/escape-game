@@ -223,7 +223,17 @@ function collides(x,y,roomId=room){
   if(x<1||x>W-1||y<1||y>H-1)return true;
 
   const r=rooms[roomId];
-  
+    if(r.floor){
+    const fx=Math.floor(x);
+    const fy=Math.floor(y);
+
+    const onFloor=r.floor.some(([ax,ay,aw,ah])=>
+      fx>=ax&&fx<ax+aw&&
+      fy>=ay&&fy<ay+ah
+    );
+
+    if(!onFloor)return true;
+  }
   if(r.doors.some(d=>
     Math.abs(x-(d.x+.5))<.65&&
     Math.abs(y-(d.y+.5))<.65
