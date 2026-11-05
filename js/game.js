@@ -47,12 +47,29 @@ camera.y=Math.max(0,Math.min(
   const sy=y=>y*TILE-camera.y;
   const r=rooms[room];
 
-  // floor
-for(let y=0;y<H;y++){
-  for(let x=0;x<W;x++){
-      tileImg((x+y)%7===0?'floor_alt':'floor',sx(x),sy(y));
-      if((x*3+y*7+room)%37===0){
-        tileImg('floor_horror',sx(x),sy(y));
+    // floor
+  if(r.floor){
+    for(const area of r.floor){
+      const [ax,ay,aw,ah]=area;
+
+      for(let y=ay;y<ay+ah;y++){
+        for(let x=ax;x<ax+aw;x++){
+          tileImg((x+y)%7===0?'floor_alt':'floor',sx(x),sy(y));
+
+          if((x*3+y*7+room)%37===0){
+            tileImg('floor_horror',sx(x),sy(y));
+          }
+        }
+      }
+    }
+  }else{
+    for(let y=0;y<H;y++){
+      for(let x=0;x<W;x++){
+        tileImg((x+y)%7===0?'floor_alt':'floor',sx(x),sy(y));
+
+        if((x*3+y*7+room)%37===0){
+          tileImg('floor_horror',sx(x),sy(y));
+        }
       }
     }
   }
