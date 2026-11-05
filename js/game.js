@@ -73,18 +73,51 @@ function draw(){
     }
   }
 
-  // walls
-  for(let x=0;x<W;x++){
-    tileImg('wall',sx(x),sy(0));
-    tileImg('wall',sx(x),sy(H-1));
-  }
+    // walls
+  if(r.floor){
+    const floorTiles = new Set();
 
-  for(let y=1;y<H-1;y++){
-    if(!r.doors.some(d=>d.x===0&&d.y===y)){
-      tileImg('wall',sx(0),sy(y),TILE,TILE,90);
+    // 床があるマスを登録
+    for(const area of r.floor){
+      const [ax,ay,aw,ah]=area;
+
+      for(let y=ay;y<ay+ah;y++){
+        for(let x=ax;x<ax+aw;x++){
+          floorTiles.add(`${x},${y}`);
+        }
+      }
     }
-    if(!r.doors.some(d=>d.x===W-1&&d.y===y)){
-      tileImg('wall',sx(W-1),sy(y),TILE,TILE,90);
+
+    // 床の外周に壁を配置
+    for(const key of floorTiles){
+      const [x,y]=key.split(',').map(Number);
+
+      const neighbors=[
+        [0,-1,0],
+        [1,0,90],
+        [0,1,180],
+        [-1,0,270]
+      ];
+
+      for(const [dx,dy,angle] of neighbors){
+        if(!floorTiles.has(`${x+dx},${y+dy}`)){
+          tileImg('wall',sx(x),sy(y),TILE,TILE,angle);
+        }
+      }
+    }
+  }else{
+    for(let x=0;x<W;x++){
+      tileImg('wall',sx(x),sy(0));
+      tileImg('wall',sx(x),sy(H-1));
+    }
+
+    for(let y=1;y<H-1;y++){
+      if(!r.doors.some(d=>d.x===0&&d.y===y)){
+        tileImg('wall',sx(0),sy(y),TILE,TILE,90);
+      }
+      if(!r.doors.some(d=>d.x===W-1&&d.y===y)){
+        tileImg('wall',sx(W-1),sy(y),TILE,TILE,90);
+      }
     }
   }
 
