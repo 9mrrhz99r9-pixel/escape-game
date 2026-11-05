@@ -4,10 +4,6 @@ window.FLOOR1_MAP = {
   name: "1階",
   tileSize: 32,
 
-  // 現在の試作マップと同じサイズ
-  width: 12,
-  height: 8,
-
   start: {
     x: 3.5,
     y: 4.5
