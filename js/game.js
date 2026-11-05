@@ -105,20 +105,27 @@ function draw(){
       }
     }
 
-    // 床の外周に壁を配置
+        // 床の外周に壁を配置
+    const edges=[
+      {dx:0,dy:-1,angle:0},
+      {dx:0,dy:1,angle:180},
+      {dx:-1,dy:0,angle:270},
+      {dx:1,dy:0,angle:90}
+    ];
+
     for(const key of floorTiles){
       const [x,y]=key.split(',').map(Number);
 
-      const neighbors=[
-        [0,-1,0],
-        [1,0,90],
-        [0,1,180],
-        [-1,0,270]
-      ];
+      for(const edge of edges){
+        if(floorTiles.has(`${x+edge.dx},${y+edge.dy}`))continue;
 
-      for(const [dx,dy,angle] of neighbors){
-        if(!floorTiles.has(`${x+dx},${y+dy}`)){
-          tileImg('wall',sx(x),sy(y),TILE,TILE,angle);
+        const px=sx(x+0.5);
+        const py=sy(y+0.5);
+
+        if(edge.dx===0){
+          drawWall(px,py+(edge.dy*TILE/2),0);
+        }else{
+          drawWall(px+(edge.dx*TILE/2),py,90);
         }
       }
     }
