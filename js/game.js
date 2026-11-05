@@ -2,8 +2,6 @@
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
 const $=id=>document.getElementById(id);const imgs={};for(const n of ['floor','floor_alt','floor_horror','floor_decayed','wall','wall_cracked','locker','locker_decayed','desk','chair','door','window','board','cubby','student_idle','student_walk','wall_drip','enemy_sprite_sheet']){imgs[n]=new Image();imgs[n].src='assets/'+n+'.png'}
 const TILE=window.FLOOR1_MAP.tileSize;
-const W=window.FLOOR1_MAP.width;
-const H=window.FLOOR1_MAP.height;
 const rooms=window.FLOOR1_MAP.rooms;
 let room=0,player={x:3.5,y:4.5,dir:'down',hidden:false},enemy={x:8,y:4,dir:0,mode:'wander',timer:0},hasKey=false,unlocked=false,gameOver=false,won=false,running=false,move={x:0,y:0},last=0,msgTimer=0,gameStarted=false;
 
