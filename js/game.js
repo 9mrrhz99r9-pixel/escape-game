@@ -33,12 +33,11 @@ function tileImg(name,x,y,w=TILE,h=TILE,angle=0){
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  camera.x=Math.max(0,Math.min(
-  player.x*TILE-canvas.width/2,
-  W*TILE-canvas.width
-));
+  // 背景を黒くする
+  ctx.fillStyle='#000';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-camera.y=Math.max(0,Math.min(
+  camera.x=Math.max(0,Math.min(
   player.y*TILE-canvas.height/2,
   H*TILE-canvas.height
 ));
