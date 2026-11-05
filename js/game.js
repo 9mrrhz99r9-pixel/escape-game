@@ -428,7 +428,7 @@ function finish(win){
 }
 function act(){if(!gameStarted)return;const r=rooms[room];if(player.hidden){player.hidden=false;notify('ロッカーから出た');return}
 // door nearby
-const d=r.doors.find(d=>Math.hypot(player.x-(d.x+.5),player.y-(d.y+.5))<1.5);if(d){if(d.to===2&&!hasKey&&!unlocked){notify('鍵がかかっている');return}if(d.to===2){unlocked=true;finish(true);return}room=d.to;player.x=d.tx+.5;player.y=d.ty+.5;$('roomLabel').textContent='ROOM 0'+(room+1)+' / '+rooms[room].name;notify(rooms[room].name+'に入った');return}
+const d=r.doors.find(d=>Math.hypot(player.x-(d.x+.5),player.y-(d.y+.5))<1.5);if(d){if(d.to===2&&!hasKey&&!unlocked){notify('鍵がかかっている');return}if(d.to===2){unlocked=true;finish(true);return}room=d.to;updateRoomSize();player.x=d.tx+.5;player.y=d.ty+.5;$('roomLabel').textContent='ROOM 0'+(room+1)+' / '+rooms[room].name;notify(rooms[room].name+'に入った');return}
 // key pickup
 if(!hasKey&&r.keySpot&&Math.hypot(player.x-(r.keySpot[0]+.5),player.y-(r.keySpot[1]+.5))<1.25){hasKey=true;r.keySpot=null;notify('鍵を手に入れた');return}
 // furniture/locker inspect
