@@ -105,28 +105,57 @@ function draw(){
       }
     }
 
-        // 床の外周に壁を配置
-    const edges=[
-      {dx:0,dy:-1,angle:0},
-      {dx:0,dy:1,angle:180},
-      {dx:-1,dy:0,angle:270},
-      {dx:1,dy:0,angle:90}
-    ];
+            // 床の外周を2マス単位でまとめる
+    const horizontalEdges = new Set();
+    const verticalEdges = new Set();
 
     for(const key of floorTiles){
       const [x,y]=key.split(',').map(Number);
 
-      for(const edge of edges){
-        if(floorTiles.has(`${x+edge.dx},${y+edge.dy}`))continue;
+      if(!floorTiles.has(`${x},${y-1}`))
+        horizontalEdges.add(`${x},${y}`);
 
-        const px=sx(x+0.5);
-        const py=sy(y+0.5);
+      if(!floorTiles.has(`${x},${y+1}`))
+        horizontalEdges.add(`${x},${y+1}`);
 
-        if(edge.dx===0){
-          drawWall(px,py+(edge.dy*TILE/2),0);
-        }else{
-          drawWall(px+(edge.dx*TILE/2),py,90);
-        }
+      if(!floorTiles.has(`${x-1},${y}`))
+        verticalEdges.add(`${x},${y}`);
+
+      if(!floorTiles.has(`${x+1},${y}`))
+        verticalEdges.add(`${x+1},${y}`);
+    }
+
+    // 上下の壁を配置
+    const horizontal=[...horizontalEdges]
+      .map(k=>k.split(',').map(Number))
+      .sort((a,b)=>a[1]-b[1]||a[0]-b[0]);
+
+    for(let i=0;i<horizontal.length;i++){
+      const [x,y]=horizontal[i];
+      const next=horizontal[i+1];
+
+      if(next&&next[1]===y&&next[0]===x+1){
+        drawWall(sx(x+1),sy(y),90);
+        i++;
+      }else{
+        tileImg('wall',sx(x),sy(y)-TILE/2,TILE,TILE,90);
+      }
+    }
+
+    // 左右の壁を配置
+    const vertical=[...verticalEdges]
+      .map(k=>k.split(',').map(Number))
+      .sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+
+    for(let i=0;i<vertical.length;i++){
+      const [x,y]=vertical[i];
+      const next=vertical[i+1];
+
+      if(next&&next[0]===x&&next[1]===y+1){
+        drawWall(sx(x),sy(y+1),0);
+        i++;
+      }else{
+        tileImg('wall',sx(x)-TILE/2,sy(y),TILE,TILE);
       }
     }
   }else{
